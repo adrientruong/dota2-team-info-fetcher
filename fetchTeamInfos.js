@@ -13,7 +13,7 @@ var teamsJSONFilePath = argv.teams;
 var limiter = new RateLimiter(1, 1000);
 var getTeamInfo = function(teamID, callback) {
 	limiter.removeTokens(1, function(error, remainingRequests) {
-		var url = 'http://api.steampowered.com/IDOTA2Match_570/GetTeamInfoByTeamID/v1/?key=' + key + '&start_at_team_id=' + teamID;
+		var url = 'http://api.steampowered.com/IDOTA2Match_570/GetTeamInfoByTeamID/v1/?teams_requested=1&key=' + key + '&start_at_team_id=' + teamID;
 		var options = { url: url };
 		request(options, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
