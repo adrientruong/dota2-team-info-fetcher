@@ -1,0 +1,11 @@
+{
+  "name": "dota2-teaminfo",
+  "description": "",
+  "version": "0.0.1",
+  "author": "Adrien Truong <adrien.truong@me.com",
+  "main": "main.js",
+  "engines": ["node >= 0.10.0"],
+  "dependencies": {
+    "limiter": "*"
+  }
+}
