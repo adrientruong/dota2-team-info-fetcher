@@ -47,14 +47,15 @@ var finishCount = 0;
 
 console.log("Estimated time needed: ~" + teams.length + " secs");
 
-for (var i = 0; i < 5; i++) {
+for (var i = 0; i < teams.length; i++) {
 	var team = teams[i];
 	getTeamInfo(team.id, function(error, teamInfo) {
 		teamInfos.push(teamInfo);
 
 		finishCount++;
-		if (finishCount == 5) {
-			var teamInfosJSON = JSON.stringify(teamInfos);
+		if (finishCount == teams.length) {
+			var finalJSON = { teamInfos: teamInfos };
+			var teamInfosJSON = JSON.stringify(finalJSON, null, 4);
 			fs.writeFile('./teaminfos.json', teamInfosJSON, function(error) {
 				if (error) {
 					console.log(error);
