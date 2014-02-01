@@ -42,7 +42,7 @@ var absolutePath = path.resolve(path.dirname(process.argv[1]), teamsJSONFilePath
 var teamsJSON = fs.readFileSync(absolutePath);
 var teams = JSON.parse(teamsJSON).teams;
 var teamInfos = [];
-var finishedCount = 0;
+var finishCount = 0;
 
 for (var i = 0; i < teams.length; i++) {
 	var team = teams[i];
