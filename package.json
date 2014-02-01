@@ -8,6 +8,7 @@
   "dependencies": {
     "limiter": "*",
     "request": "*",
-    "optimist": "*"
+    "optimist": "*",
+    "json-bigint": "*"
   }
 }
