@@ -9,6 +9,7 @@ var JSONBig = require('json-bigint');
 var argv = require('optimist').argv;
 var key = argv.key;
 var teamsJSONFilePath = argv.teams;
+var useCamelCase = argv.camelcase;
 
 var limiter = new RateLimiter(1, 1000);
 var getTeamInfo = function(teamID, callback) {
@@ -23,6 +24,9 @@ var getTeamInfo = function(teamID, callback) {
 				if (teams.length != 0 && teams[0].team_id == teamID) {
 					var teamInfo = teams[0];
 					convertIDsToStrings(teamInfo);
+					if (useCamelCase) {
+						convertSnakeCaseKeysToCamelCase(teamInfo);
+					}
 					
 					callback(null, teamInfo);
 				}
@@ -48,6 +52,71 @@ var convertIDsToStrings = function(object) {
 			}
 		}
 	}
+}
+
+String.prototype.capitalize = function()
+{
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+String.prototype.hasSuffix = function(suffix)
+{
+  var suffixLength = suffix.length;
+  var end = this.substr(this.length - suffixLength);
+
+  return (end == suffix);
+}
+
+String.prototype.hasUpperCase = function() {
+    if(this.toLowerCase() != this) {
+        return true;
+    }
+    return false;
+}
+
+var convertSnakeCaseKeysToCamelCase = function(object) {
+	for (var key in object) {
+		if (object.hasOwnProperty(key)) {
+			var camelCaseKey = toCamelCaseFromSnakeCase(key);
+			console.log(camelCaseKey);
+			var value = object[key];
+			delete object[key];
+			object[camelCaseKey] = value;
+		}
+	}
+}
+
+var toCamelCaseFromSnakeCase = function(input) {
+  if (input.hasUpperCase()) return input;
+
+  var allCapitalExceptions = ["id", "url"];
+  for (var i = 0; i < allCapitalExceptions.length; i++) {
+      var exception = allCapitalExceptions[i];
+      if (input.hasSuffix(exception)) {
+        var untilSuffix = input.substring(0, input.length - exception.length);
+        input = untilSuffix + "_" + exception;
+        break;
+      }
+  }
+
+  var components = input.split("_");
+  var camelCase = "";
+
+  for (var i = 0; i < components.length; i++) {
+    var component = components[i];
+    component = component.toLowerCase();
+
+    if (allCapitalExceptions.indexOf(component) > -1) {
+      component = component.toUpperCase();
+    }
+    else if (i > 0) {
+      component = component.capitalize();
+    }
+
+    camelCase = camelCase + component;
+  }
+
+  return camelCase;
 }
 
 var pathArgument = process.argv[2];
