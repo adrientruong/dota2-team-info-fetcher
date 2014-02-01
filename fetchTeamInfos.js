@@ -27,7 +27,7 @@ var getTeamInfo = function(teamID, callback) {
 					callback(null, teamInfo);
 				}
 				else {
-					callback(new Error('API did not return team info for id: ' + teamID));
+					callback(new Error("API did not return team info for id: " + teamID));
 				}
 			}
 			else {
