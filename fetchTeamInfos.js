@@ -70,7 +70,7 @@ for (var i = 0; i < teams.length; i++) {
 
 		finishCount++;
 		if (finishCount == teams.length) {
-			var finalJSON = { teamInfos: teamInfos };
+			var finalJSON = { results: teamInfos };
 			var teamInfosJSON = JSON.stringify(finalJSON, null, 4);
 			fs.writeFile('./teaminfos.json', teamInfosJSON, function(error) {
 				if (error) {
