@@ -68,10 +68,7 @@ String.prototype.hasSuffix = function(suffix)
 }
 
 String.prototype.hasUpperCase = function() {
-    if(this.toLowerCase() != this) {
-        return true;
-    }
-    return false;
+	return (this.toLowerCase() != this);
 }
 
 var convertSnakeCaseKeysToCamelCase = function(object) {
