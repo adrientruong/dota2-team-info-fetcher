@@ -27,6 +27,7 @@ var getTeamInfo = function(teamID, callback) {
 				}
 			}
 			else {
+				console.error(error);
 				callback(error);
 			}
 		});
@@ -44,13 +45,15 @@ var teams = JSON.parse(teamsJSON).teams;
 var teamInfos = [];
 var finishCount = 0;
 
-for (var i = 0; i < teams.length; i++) {
+console.log("Estimated time needed: ~" + teams.length + " secs");
+
+for (var i = 0; i < 5; i++) {
 	var team = teams[i];
-	getTeamInfo(team.id, function(teamInfo) {
+	getTeamInfo(team.id, function(error, teamInfo) {
 		teamInfos.push(teamInfo);
 
 		finishCount++;
-		if (finishCount == teams.length) {
+		if (finishCount == 5) {
 			var teamInfosJSON = JSON.stringify(teamInfos);
 			fs.writeFile('./teaminfos.json', teamInfosJSON, function(error) {
 				if (error) {
