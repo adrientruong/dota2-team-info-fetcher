@@ -9,7 +9,7 @@ var JSONBig = require('json-bigint');
 var argv = require('optimist').argv;
 var key = argv.key;
 var teamsJSONFilePath = argv.teams;
-var useCamelCase = argv.camelcase;
+var useCamelCase = argv.camelCase;
 var shouldGroup = argv.group;
 
 var limiter = new RateLimiter(1, 1000);
