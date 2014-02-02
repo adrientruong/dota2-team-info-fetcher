@@ -59,14 +59,6 @@ String.prototype.capitalize = function()
   return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-String.prototype.hasSuffix = function(suffix)
-{
-  var suffixLength = suffix.length;
-  var end = this.substr(this.length - suffixLength);
-
-  return (end == suffix);
-}
-
 String.prototype.hasUpperCase = function() {
 	return (this.toLowerCase() != this);
 }
@@ -89,7 +81,7 @@ var toCamelCaseFromSnakeCase = function(input) {
   var allCapitalExceptions = ["id", "url"];
   for (var i = 0; i < allCapitalExceptions.length; i++) {
       var exception = allCapitalExceptions[i];
-      if (input.hasSuffix(exception)) {
+      if (input.endsWith(exception)) {
         var untilSuffix = input.substring(0, input.length - exception.length);
         input = untilSuffix + "_" + exception;
         break;
