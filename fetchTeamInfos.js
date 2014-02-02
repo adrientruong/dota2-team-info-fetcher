@@ -10,6 +10,7 @@ var argv = require('optimist').argv;
 var key = argv.key;
 var teamsJSONFilePath = argv.teams;
 var useCamelCase = argv.camelcase;
+var shouldGroup = argv.group;
 
 var limiter = new RateLimiter(1, 1000);
 var getTeamInfo = function(teamID, callback) {
@@ -27,6 +28,9 @@ var getTeamInfo = function(teamID, callback) {
 					if (useCamelCase) {
 						convertSnakeCaseKeysToCamelCase(teamInfo);
 					}
+					if (shouldGroup) {
+						groupSimilarProperties(teamInfo);
+					}
 					
 					callback(null, teamInfo);
 				}
@@ -42,6 +46,29 @@ var getTeamInfo = function(teamID, callback) {
 	});
 }
 
+var groupSimilarProperties = function (teamInfo) {
+	var patterns = ['playerXAccountID', 'leagueIDX'];
+
+	for (var i = 0; i < patterns.length; i++) {
+		var pattern = patterns[i];
+		var array = [];
+
+		for (var j = 0; j < Number.MAX_VALUE; j++) {
+			var key = pattern.replace('X', j);
+
+			if (!teamInfo.hasOwnProperty(key)) break;
+
+			var value = teamInfo[key];
+			array.push(value);
+			delete teamInfo[key];
+		}
+
+		var key = pattern.replace('X', '');
+		key = key + 's';
+		teamInfo[key] = array;
+	}
+}
+
 var convertIDsToStrings = function(object) {
 	var explicitKeys = ['logo', 'logo_sponsor'];
 	for (var key in object) {
@@ -52,6 +79,20 @@ var convertIDsToStrings = function(object) {
 			}
 		}
 	}
+}
+
+if (!String.prototype.endsWith) {
+    Object.defineProperty(String.prototype, 'endsWith', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: function (searchString, position) {
+            position = position || this.length;
+            position = position - searchString.length;
+            var lastIndex = this.lastIndexOf(searchString);
+            return lastIndex !== -1 && lastIndex === position;
+        }
+    });
 }
 
 String.prototype.capitalize = function()
@@ -67,7 +108,6 @@ var convertSnakeCaseKeysToCamelCase = function(object) {
 	for (var key in object) {
 		if (object.hasOwnProperty(key)) {
 			var camelCaseKey = toCamelCaseFromSnakeCase(key);
-			console.log(camelCaseKey);
 			var value = object[key];
 			delete object[key];
 			object[camelCaseKey] = value;
