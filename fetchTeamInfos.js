@@ -195,9 +195,15 @@ console.log("Estimated time needed: ~" + teams.length + " secs");
 for (var i = 0; i < teams.length; i++) {
 	var team = teams[i];
 	getTeamInfo(team.id, function(error, teamInfo) {
+		finishCount++;
+
+		if (!teamInfo) {
+			console.log(error);
+			return;
+		}
+
 		teamInfos.push(teamInfo);
 
-		finishCount++;
 		if (finishCount == teams.length) {
 			var finalJSON = { results: teamInfos };
 			var teamInfosJSON = JSON.stringify(finalJSON, null, 4);
