@@ -9,8 +9,7 @@ var JSONBig = require('json-bigint');
 var argv = require('optimist').argv;
 var key = argv.key;
 var teamsJSONFilePath = argv.teams;
-var useCamelCase = argv.camelCase;
-var shouldGroup = argv.group;
+var pretty = argv.pretty;
 
 var limiter = new RateLimiter(1, 1000);
 var getTeamInfo = function(teamID, callback) {
@@ -25,11 +24,8 @@ var getTeamInfo = function(teamID, callback) {
 				if (teams.length != 0 && teams[0].team_id == teamID) {
 					var teamInfo = teams[0];
 					convertIDsToStrings(teamInfo);
-					if (useCamelCase) {
-						convertSnakeCaseKeysToCamelCase(teamInfo);
-					}
-					if (shouldGroup) {
-						groupSimilarProperties(teamInfo);
+					if (pretty) {
+						makePretty(teamInfo);
 					}
 					
 					callback(null, teamInfo);
@@ -44,6 +40,41 @@ var getTeamInfo = function(teamID, callback) {
 			}
 		});
 	});
+}
+
+var makePretty = function(teamInfo) {
+	convertSnakeCaseKeysToCamelCase(teamInfo);
+	groupSimilarProperties(teamInfo);
+	convertTimesToDates(teamInfo);
+	if (teamInfo.rating == "inactive") {
+		teamInfo.rating = -1;
+	}
+	teamInfo.sponsorLogo = teamInfo.logoSponsor;
+	delete teamInfo.logoSponsor;
+	changeUGCIDKeyNames(teamInfo);
+}
+
+var changeUGCIDKeyNames = function(teamInfo) {
+	var keys = ["logo", "sponsorLogo"];
+	for (var i = 0; i < keys.length; i++) {
+		var key = keys[i];
+		var newKey = key + "UGCID";
+		var value = teamInfo[key];
+		teamInfo[newKey] = value;
+		delete teamInfo[key];
+	}
+}
+
+var convertTimesToDates = function(teamInfo) {
+	var map = {timeCreated: 'teamCreationDate'};
+
+	for (var key in map) {
+		var newKey = map[key];
+		var time = teamInfo[key];
+		var date = new Date(time * 1000);
+		teamInfo[newKey] = date;
+		delete teamInfo[key];
+	}
 }
 
 var groupSimilarProperties = function (teamInfo) {
