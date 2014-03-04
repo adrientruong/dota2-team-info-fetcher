@@ -40,7 +40,7 @@ var getTeamInfo = function(teamID, callback) {
 			}
 		});
 	});
-}
+};
 
 var makePretty = function(teamInfo) {
 	convertSnakeCaseKeysToCamelCase(teamInfo);
@@ -52,7 +52,7 @@ var makePretty = function(teamInfo) {
 	teamInfo.sponsorLogo = teamInfo.logoSponsor;
 	delete teamInfo.logoSponsor;
 	changeUGCIDKeyNames(teamInfo);
-}
+};
 
 var changeUGCIDKeyNames = function(teamInfo) {
 	var keys = ["logo", "sponsorLogo"];
@@ -63,7 +63,7 @@ var changeUGCIDKeyNames = function(teamInfo) {
 		teamInfo[newKey] = value;
 		delete teamInfo[key];
 	}
-}
+};
 
 var convertTimesToDates = function(teamInfo) {
 	var map = {timeCreated: 'teamCreationDate'};
@@ -75,7 +75,7 @@ var convertTimesToDates = function(teamInfo) {
 		teamInfo[newKey] = date;
 		delete teamInfo[key];
 	}
-}
+};
 
 var groupSimilarProperties = function (teamInfo) {
 	var patterns = ['playerXAccountID', 'leagueIDX'];
@@ -98,7 +98,7 @@ var groupSimilarProperties = function (teamInfo) {
 		key = key + 's';
 		teamInfo[key] = array;
 	}
-}
+};
 
 var convertIDsToStrings = function(object) {
 	var explicitKeys = ['logo', 'logo_sponsor'];
@@ -110,30 +110,29 @@ var convertIDsToStrings = function(object) {
 			}
 		}
 	}
-}
+};
 
 if (!String.prototype.endsWith) {
-    Object.defineProperty(String.prototype, 'endsWith', {
-        enumerable: false,
-        configurable: false,
-        writable: false,
-        value: function (searchString, position) {
-            position = position || this.length;
-            position = position - searchString.length;
-            var lastIndex = this.lastIndexOf(searchString);
-            return lastIndex !== -1 && lastIndex === position;
-        }
-    });
-}
+	Object.defineProperty(String.prototype, 'endsWith', {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: function (searchString, position) {
+			position = position || this.length;
+			position = position - searchString.length;
+			var lastIndex = this.lastIndexOf(searchString);
+			return lastIndex !== -1 && lastIndex === position;
+		}
+	});
+};
 
-String.prototype.capitalize = function()
-{
-  return this.charAt(0).toUpperCase() + this.slice(1);
-}
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1);
+};
 
 String.prototype.hasUpperCase = function() {
 	return (this.toLowerCase() != this);
-}
+};
 
 var convertSnakeCaseKeysToCamelCase = function(object) {
 	for (var key in object) {
@@ -144,40 +143,40 @@ var convertSnakeCaseKeysToCamelCase = function(object) {
 			object[camelCaseKey] = value;
 		}
 	}
-}
+};
 
 var toCamelCaseFromSnakeCase = function(input) {
-  if (input.hasUpperCase()) return input;
+	if (input.hasUpperCase()) return input;
 
-  var allCapitalExceptions = ["id", "url"];
-  for (var i = 0; i < allCapitalExceptions.length; i++) {
-      var exception = allCapitalExceptions[i];
-      if (input.endsWith(exception)) {
-        var untilSuffix = input.substring(0, input.length - exception.length);
-        input = untilSuffix + "_" + exception;
-        break;
-      }
-  }
+	var allCapitalExceptions = ["id", "url"];
+	for (var i = 0; i < allCapitalExceptions.length; i++) {
+		var exception = allCapitalExceptions[i];
+		if (input.endsWith(exception)) {
+			var untilSuffix = input.substring(0, input.length - exception.length);
+			input = untilSuffix + "_" + exception;
+			break;
+		}
+	}
 
-  var components = input.split("_");
-  var camelCase = "";
+	var components = input.split("_");
+	var camelCase = "";
 
-  for (var i = 0; i < components.length; i++) {
-    var component = components[i];
-    component = component.toLowerCase();
+	for (var i = 0; i < components.length; i++) {
+		var component = components[i];
+		component = component.toLowerCase();
 
-    if (allCapitalExceptions.indexOf(component) > -1) {
-      component = component.toUpperCase();
-    }
-    else if (i > 0) {
-      component = component.capitalize();
-    }
+		if (allCapitalExceptions.indexOf(component) > -1) {
+			component = component.toUpperCase();
+		}
+		else if (i > 0) {
+			component = component.capitalize();
+		}
 
-    camelCase = camelCase + component;
-  }
+		camelCase = camelCase + component;
+	}
 
-  return camelCase;
-}
+	return camelCase;
+};
 
 var pathArgument = process.argv[2];
 if (!pathArgument) {
